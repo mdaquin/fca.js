@@ -1,10 +1,4 @@
 
-// TEST with new BinaryVector implementation
-// find root in a better way
-// buildtaxonomy in a more efficient way
-// extension as binary vector 
-// check spelling of extention and intention
-
 class Concept{
     constructor(intention, bit){
 	this.subconcepts = [];
