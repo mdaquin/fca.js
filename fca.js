@@ -5,7 +5,6 @@ class Concept{
 	this.extention = [];
 	if (!bit) this.intention = new BinaryVector(intention);
 	else this.intention = intention;
-	this.root = true;
     }
     equivalent(c) {return this.intention.equals(c.intention);}
     intersection(c) {return new Concept(this.intention.intersection(c.intention), true);}
@@ -17,7 +16,6 @@ class Concept{
     addSubConcept(c){
 	var found = false;
 	var toRemove = [];
-	c.root = false;
 	for(var sc in this.subconcepts){
 	    var scc = this.subconcepts[sc];
 	    if (scc.subsumes(c)) {found = true; break;}
@@ -90,13 +88,15 @@ class FormalContext{
 	}
     }
     root(){
-	var ret = [];
+	if (this.concepts.length == 0) return undefined;
+	if (this._root) return this._root;
+	var max = this.concepts[0];
 	for (var c in this.concepts){
-	    if (this.concepts[c].root) ret.push(this.concepts[c]);	   
+	    if (this.concepts[c].subsumes(max)) max = this.concepts[c];
 	}
-	return ret;
+	this._root = max;
+	return max;
     }
-    // TODO: optimise by starting from root and going down only if needed
     populate(){
 	for(var i in this.matrix){
 	    var ci = new Concept(this.matrix[i], false);

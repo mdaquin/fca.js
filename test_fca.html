@@ -2,9 +2,8 @@
 <html>
   <head>
     <title>aimab - adventure in mailbox</title>
-    <script src="js/interface.js"></script>    
-    <script src="js/bvo.js"></script>
-    <script src="js/fca.js"></script>
+    <script src="bvo.js"></script>
+    <script src="fca.js"></script>
     <meta charset="utf-8" />
     <style>
       *{font-family: Courier;}
@@ -19,6 +18,16 @@
     <div id="lattice"></div>
     
     <script>
+    var starttime = new Date().getTime();
+
+var inter = {
+    message: function (m){
+        console.log(((new Date().getTime()-starttime)/1000)+" - "+m);
+        document.getElementById("message").innerHTML+="<br>"+
+            (((new Date().getTime())-starttime)/1000)+" - "+m;
+    }
+}
+
       inter.message("starting");
       attributes = ["temporary", "running", "natural", "stagnant", "constant", "maritime"];
       objects = ["canal","channel","lagoon","lake","maar","puddle","pond","pool","reservoir","river","rivulet", "runnel","sea","stream","tarn","torrent","trickle"]
