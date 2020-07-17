@@ -1,16 +1,16 @@
 
 class Concept{
-    constructor(intention, bit){
+    constructor(intent, bit){
 	this.subconcepts = [];
-	this.extention = [];
-	if (!bit) this.intention = new BinaryVector(intention);
-	else this.intention = intention;
+	this.extent = [];
+	if (!bit) this.intent = new BinaryVector(intent);
+	else this.intent = intent;
     }
-    equivalent(c) {return this.intention.equals(c.intention);}
-    intersection(c) {return new Concept(this.intention.intersection(c.intention), true);}
+    equivalent(c) {return this.intent.equals(c.intent);}
+    intersection(c) {return new Concept(this.intent.intersection(c.intent), true);}
     createLabels(attr){
 	this.attributes = [];	
-	for(var i in attr) if (this.intention.get(i)) this.attributes.push(attr[i]);
+	for(var i in attr) if (this.intent.get(i)) this.attributes.push(attr[i]);
     }
     subsumes(c) {return this.intersection(c).equivalent(this);}
     addSubConcept(c){
@@ -34,7 +34,7 @@ class FormalContext{
 	this.concepts = []		
     }
     // super basic algorithm to build
-    // concepts (only intention)
+    // concepts (only intent)
     buildConcepts(){
 	for(var i in this.matrix){
 	    var c = new Concept(matrix[i], false);
@@ -101,7 +101,7 @@ class FormalContext{
 	for(var i in this.matrix){
 	    var ci = new Concept(this.matrix[i], false);
 	    for (var c in this.concepts){
-		if (this.concepts[c].subsumes(ci)) this.concepts[c].extention.push(this.objects[i]);
+		if (this.concepts[c].subsumes(ci)) this.concepts[c].extent.push(this.objects[i]);
 	    }
 	}
     }
