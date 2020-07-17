@@ -72,8 +72,19 @@ var inter = {
 	}
 	return str+'</div>';
       }
-      
-      document.getElementById("lattice").innerHTML = display(formal_context.root()[0], 1);
+
+    
+      function display2(n,i){
+	  var str=""
+	  for (var j = 0; j < i; j++) str+="--";
+	  str+=n.attributes + "<br>" // +" ("+n.extention+")<br/>";
+	  for (var sn in n.subconcepts){
+	      str += display2(n.subconcepts[sn], i+1);
+	  }	  
+	  return str;
+      }
+
+      document.getElementById("lattice").innerHTML = display2(formal_context.root(), 1);
 
     </script>    
   </body>

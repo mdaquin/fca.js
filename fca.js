@@ -81,7 +81,7 @@ class FormalContext{
 		}
 	    }
 	}
-    }
+    }    
     addLabels(){
 	for (var c in this.concepts){
 	    this.concepts[c].createLabels(this.attributes);
