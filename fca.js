@@ -8,9 +8,11 @@ class Concept{
     }
     equivalent(c) {return this.intent.equals(c.intent);}
     intersection(c) {return new Concept(this.intent.intersection(c.intent), true);}
-    createLabels(attr){
+    createLabels(attr, obj){
 	this.attributes = [];	
 	for(var i in attr) if (this.intent.get(i)) this.attributes.push(attr[i]);
+	this.objects = []
+	for(var i in obj) if (this.extent.get(i)) this.objects.push(obj[i]);
     }
     subsumes(c) {return this.intersection(c).equivalent(this);}
     addSubConcept(c){
@@ -84,7 +86,7 @@ class FormalContext{
     }    
     addLabels(){
 	for (var c in this.concepts){
-	    this.concepts[c].createLabels(this.attributes);
+	    this.concepts[c].createLabels(this.attributes, this.objects);
 	}
     }
     root(){
@@ -98,11 +100,15 @@ class FormalContext{
 	return max;
     }
     populate(){
-	for(var i in this.matrix){
-	    var ci = new Concept(this.matrix[i], false);
-	    for (var c in this.concepts){
-		if (this.concepts[c].subsumes(ci)) this.concepts[c].extent.push(this.objects[i]);
+	for (var c in this.concepts){
+	    var bv = [];	    
+	    for(var i in this.matrix) {
+		var ci = new Concept(this.matrix[i], false);
+		if (this.concepts[c].subsumes(ci)) bv.push(true);
+		else bv.push(false);
 	    }
+	    this.concepts[c].extent = new BinaryVector(bv);
 	}
     }
 }
+

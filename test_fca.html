@@ -53,12 +53,12 @@ var inter = {
       var formal_context = new FormalContext(attributes, objects, matrix);
       inter.message("building concepts");
       formal_context.buildConcepts();
-      inter.message("adding labels");    
-      formal_context.addLabels();
       inter.message("creating taxonomy");        
       formal_context.buildTaxonomy();
       inter.message("populating");
       formal_context.populate();
+      inter.message("adding labels");    
+      formal_context.addLabels();    
       inter.message("done");
       console.log(formal_context.root());
       console.log(formal_context);
