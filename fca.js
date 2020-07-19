@@ -83,7 +83,15 @@ class FormalContext{
 		}
 	    }
 	}
-    }    
+	this.addParents();
+    }
+    addParents(){
+	for(var c1 in this.concepts){
+	    this.concepts[c1].superconcepts = [];
+	    for (var c2 in this.concepts)
+		if (this.concepts[c2].subconcepts.includes(this.concepts[c1])) this.concepts[c1].superconcepts.push(this.concepts[c2]);
+	}
+    }
     addLabels(){
 	for (var c in this.concepts){
 	    this.concepts[c].createLabels(this.attributes, this.objects);
