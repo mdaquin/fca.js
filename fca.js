@@ -11,8 +11,12 @@ class Concept{
     createLabels(attr, obj){
 	this.attributes = [];	
 	for(var i in attr) if (this.intent.get(i)) this.attributes.push(attr[i]);
+	this.properAttributes = [];
+	for(var i in attr) if (this.properIntent().get(i)) this.properAttributes.push(attr[i]);
 	this.objects = []
 	for(var i in obj) if (this.extent.get(i)) this.objects.push(obj[i]);
+	this.properObjects = []
+	for(var i in obj) if (this.properExtent().get(i)) this.properObjects.push(obj[i]);
     }
     subsumes(c) {return this.intersection(c).equivalent(this);}
     addSubConcept(c){
@@ -25,6 +29,22 @@ class Concept{
 	}
 	if (!found) this.subconcepts.push(c);
 	for (var tr in toRemove) this.subconcepts.splice(toRemove[tr], 1);
+    }
+    properIntent(){
+	if (this._properIntent) return this._properIntent;
+	this._properIntent = this.intent;
+	for (var i in this.superconcepts){
+	    this._properIntent = this._properIntent.difference(this.superconcepts[i].intent);
+	}
+	return this._properIntent;
+    }
+    properExtent(){
+	if (this._properExtent) return this._properExtent;
+	this._properExtent = this.extent;
+	for (var i in this.subconcepts){
+	    this._properExtent = this._properExtent.difference(this.subconcepts[i].extent);
+	}
+	return this._properExtent;
     }
 }
 
