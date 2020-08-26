@@ -59,7 +59,7 @@ class FormalContext{
     // concepts (only intent)
     buildConcepts(){
 	for(var i in this.matrix){
-	    var c = new Concept(matrix[i], false);
+	    var c = new Concept(this.matrix[i], false);
 	    this.addConcept(c);
 	}
     }
