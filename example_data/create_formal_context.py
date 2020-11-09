@@ -29,6 +29,7 @@ for c in data:
     label = c["labels"]["en"]["value"]
     vector = []
     batts = []
+    ucount = 0
     for att in attributes:
         if att["id"] in c["claims"]:
             cl = c["claims"][att["id"]]        
@@ -58,14 +59,22 @@ for c in data:
                 else:
                     batts.append(att["label"]+":"+att["values"][att["id_values"].index(a)])
             else:                
-                batts.append(att["label"]+":unknown")                
+                batts.append(att["label"]+":unknown")
+                ucount = ucount + 1
         else:
             batts.append(att["label"]+":unknown")
+            ucount = ucount + 1            
     print(label+":"+json.dumps(batts, indent=2))
     for a in fc_attr:
         vector.append(a in batts)
-    obj[label] = vector
+    if ucount <= len(attributes)*0.0:
+        print("ucount OK "+str(ucount))
+        obj[label] = vector        
+    else:
+        print("not including it "+str(ucount))
 
+print(str(len(obj.keys()))+" objects saved with "+str(len(fc_attr))+" attributes")
+        
 with open("fc_attributes.json", "w") as f:
     json.dump(fc_attr, f)
 

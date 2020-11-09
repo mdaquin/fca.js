@@ -42,7 +42,7 @@ with open("country_data.json") as f:
 props = []
                     
 for k in properties:
-    if float(properties[k]["count"])/float(len(data)) > 0.8 and ("quantity" in properties[k]["datatypes"] or (len(properties[k]["values"]) < 25 and len(properties[k]["values"]) != 0)):
+    if float(properties[k]["count"])/float(len(data)) > 0.90 and ("quantity" in properties[k]["datatypes"] or (len(properties[k]["values"]) < 6 and len(properties[k]["values"]) != 0)):
         url = 'https://www.wikidata.org/wiki/Special:EntityData/'+k+'.json'
         r = requests.get(url)
         sp = {"id": k}
