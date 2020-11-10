@@ -16,25 +16,36 @@
     <div id="message"></div>
 
     <div id="control">
-    <div id="high_level_control">
+<!--    <div id="high_level_control">
     Load: <input type="file" id="file-input"/>
     <a class="button" href="javascript:save();">Save</a>
     </div>
+    -->
+    <h2>Process</h2>
     <div id="buildconcept" style="margin-top: 10px;">
     <a class="button" href="javascript:buildconcepts()">Build concepts</a>
-    <span id="bc_message">On my laptop, it takes arround 3 hours, so be ready to wait.</span>
+    <span id="bc_message">On my laptop, it takes a few minutes.</span>
     </div>
     <div id="buildtaxonomy" style="margin-top: 10px;">
     <a class="button" href="javascript:buildtaxonomy()">Build Taxonomy</a>
-    <span id="bt_message">On my laptop, it takes arround 3 hours, so be ready to wait.</span>
+    <span id="bt_message">On my laptop, it takes a few minutes again.</span>
     </div>
     <div id="populate" style="margin-top: 10px;">
     <a class="button" href="javascript:populate()">Populate and add labels</a>
     <span id="p_message">This takes less time... but still a bit</span>
+    </div>
+    <div id="rules" style="margin-top: 10px;">
+    <a class="button" href="javascript:rules()">Extract rules</a>
+    <span id="r_message">This takes less time... but still a bit</span>
     </div>    
     </div> <!-- control -->
 
-    <div id="lattice"></div>
+
+    <h2>Lattice</h2>
+    <div id="lattice">Something will appear here when the process is complete.</div>
+
+    <h2>Rules</h2>
+    <div id="rules_ex">Something will appear here when the rules are extracted.</div>
 
     <!-- data from example data folder: fc_attributes and fc_objects --> 
     <script>
@@ -51,7 +62,7 @@ var count = 0
 for(var o in objects) {
     matrix.push(fc_objects[objects[o]])
     count++
-    if (count > 20) break
+//    if (count > 20) break
 }
 console.log(count)
 </script>
@@ -60,8 +71,8 @@ console.log(count)
     <script>
 
 (function (){
-document.getElementById("file-input")
-	.addEventListener("change", load, false);
+//document.getElementById("file-input")
+//	.addEventListener("change", load, false);
 })()
 
 var formal_context = new FormalContext(attributes, objects, matrix)
@@ -191,14 +202,59 @@ function populate(){
     stage = 3    
 }
 
+function difference(a,b){
+    var res = []
+    for (var i in a)
+	if (!b.includes(a[i])) res.push(a[i])
+    return res
+}
+
+
+function rules(){
+   if (stage < 3){
+	alert("you need to populate first")
+	return
+   }
+    const starttime = new Date().getTime()
+    console.log("started rule extraction")
+    var st = ""
+    for (var i in formal_context.concepts){
+	var c = formal_context.concepts[i]
+	if (c.properAttributes.length > 0){
+	    var rs = difference(c.attributes, c.properAttributes)
+	    if (rs.length > 0) 
+		st += c.properAttributes.join(",")+" -> "+rs.join(",")+'<br/>'
+	}
+    }
+    document.getElementById("r_message").innerHTML="completed in "+((new Date().getTime() - starttime)/1000)+"s"
+    document.getElementById('rules_ex').innerHTML = st
+    stage = 3    
+}
+
+var concepts={}
+
 function showConcept(c, indent){
-    if (indent >= 3) return ""
+    concepts[c.intent._representation.join("_")] = c
     var st = '<div style="margin-left: '+(indent*10)+'px">'
-    st+='<p style="margin-bottom: 0px;">['+c.attributes.join("|")+']</p>'
+    st+='<a href="javascript:toogleExpand(\''+c.intent._representation.join("_")+'\')"><p style="margin-bottom: 0px;">['+c.attributes.join("|")+'] ('+c.subconcepts.length+')</p></a>'
     st+='<p style="margin-top: 0px;">{'+c.objects.join("|")+'}</p>'    
-    for (var i in c.subconcepts) st+=showConcept(c.subconcepts[i], indent+1)
-    st += '</div>'
+    st+='<div indent="'+(indent+1)+'" id="sc_'+c.intent._representation.join("_")+'" style="display: none">'
+    // for (var i in c.subconcepts) st+=showConcept(c.subconcepts[i], indent+1)
+    st += '</div></div>'
     return st
+}
+
+function toogleExpand(cc){
+    if (document.getElementById("sc_"+cc).style.display == "none"){
+	document.getElementById("sc_"+cc).style.display = "block"
+	scs = concepts[cc].subconcepts
+	const indent = parseInt(document.getElementById("sc_"+cc).getAttribute("indent"))
+	var st = ""	
+	for (var i in scs) st += showConcept(scs[i], indent)
+	document.getElementById("sc_"+cc).innerHTML = st
+    } else {
+	document.getElementById("sc_"+cc).style.display = "none"
+    }
 }
 
     </script>    
