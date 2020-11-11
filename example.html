@@ -34,6 +34,12 @@
     <a class="button" href="javascript:populate()">Populate and add labels</a>
     <span id="p_message">This takes less time... but still a bit</span>
     </div>
+    <div id="rulestr" style="margin-top: 20px">
+      confident min: <input type="number" value="0.8" max="0.99" id="rule_cmin" style="width: 60px" />
+      max: <input type="number" value="1.0" max="1.0" id="rule_cmax" style="width: 60px" />
+      support min: <input type="number" value="20" max="200" id="rule_smin" style="width: 60px" />
+      max: <input type="number" value="200" max="200" id="rule_smax" style="width: 60px" />      
+    </div>
     <div id="rules" style="margin-top: 10px;">
     <a class="button" href="javascript:rules()">Extract rules</a>
     <span id="r_message">This takes less time... but still a bit</span>
@@ -209,23 +215,26 @@ function difference(a,b){
     return res
 }
 
-var confidence = 0.8
 function rules(){
    if (stage < 3){
 	alert("you need to populate first")
 	return
    }
     const starttime = new Date().getTime()
-    console.log("started rule extraction")    
+    console.log("started rule extraction")
+    const cmin = document.getElementById("rule_cmin").value
+    const cmax = document.getElementById("rule_cmax").value
+    const smin = document.getElementById("rule_smin").value
+    const smax = document.getElementById("rule_smax").value    
     var st = ""
     for (var i in formal_context.concepts){
 	var c = formal_context.concepts[i]
 	var sc = c.objects.length
 	for (var j in c.subconcepts){
 	    var ssc = c.subconcepts[j].objects.length
-	    if (ssc/sc > confidence){
+	    if (ssc/sc >= cmin && ssc >= smin && ssc <= smax && ssc/sc <= cmax){
 		var d = difference(c.subconcepts[j].attributes, c.attributes)
-		st += c.attributes.join(",")+" -> "+d.join(",")+" s:"+(ssc)+" c:"+(ssc/sc)+"<br/>"
+		st += '<div class="rule" style="margin-top: 10px">'+c.attributes.join(",")+" -> "+d.join(",")+" s:"+(ssc)+" c:"+(ssc/sc)+"</div>"
 	    }
 	}
     }
