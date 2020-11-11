@@ -95,11 +95,24 @@ class FormalContext{
     buildTaxonomy(){
 	for(var c1 in this.concepts){
 	    for(var c2 in this.concepts){
-		if (c1!=c2){
-		    var cc1 = this.concepts[c1];
-		    var cc2 = this.concepts[c2];		    
-		    if (cc1.subsumes(cc2) && !cc2.subsumes(cc1)) cc1.addSubConcept(cc2);
-		    else if (cc2.subsumes(cc1)) cc2.addSubConcept(cc1);
+		var cc1 = this.concepts[c1]
+		var cc2 = this.concepts[c2]
+		if (cc1.subsumes(cc2) && !cc2.subsumes(cc1)){
+		    var found = false
+		    var toremove = []
+		    for (var sc in cc1.subconcepts){
+			if (cc1.subconcepts[sc].subsumes(cc2)) {
+			    found = true
+			    break
+			}
+			if (cc2.subsumes(cc1.subconcepts[sc]))
+			    toremove.push(cc1.subconcepts[sc])
+			    
+		    }
+		    if (!found) cc1.subconcepts.push(cc2)
+		    for (var i in toremove){
+			cc1.subconcepts.splice(cc1.subconcepts.indexOf(toremove[i]), 1)
+		    }
 		}
 	    }
 	}

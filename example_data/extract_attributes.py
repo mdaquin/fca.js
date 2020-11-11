@@ -55,7 +55,7 @@ for k in properties:
             print("nop "+r.text)
         sp["label"] = label
         if 'quantity' in properties[k]["datatypes"]:
-            p = numpy.percentile(properties[k]["all"], [33.3, 66.67])
+            p = numpy.percentile(properties[k]["all"], [33.3, 50, 66.67])
             sp["percentiles"] = p.tolist()
         else:
             sp["values"] = []
